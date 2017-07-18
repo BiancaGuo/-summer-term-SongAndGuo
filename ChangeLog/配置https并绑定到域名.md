@@ -1,0 +1,155 @@
+## 配置https并绑定到域名 ##
+
+###1、修改ubuntu host文件，将IP地址绑定到域名
+
+打开host文件
+
+	sudo gedit /etc/hosts
+添加需要的项：
+
+	127.0.1.1 www.enjoycryptology.com
+
+编辑后，重新启动一下网络
+
+    sudo /etc/init.d/networking restart
+
+
+
+###2、使用https绑定证书到域名
+
+
+
+（1）安装升级openssl
+
+首先，查看下当前设备的openssl版本：
+
+	openssl version -a
+	#OpenSSL 1.0.1f 6 Jan 2014
+
+因为ubuntu默认配置处于1.0.1-1.0.1f的版本，此版本存在“心脏出血”漏洞，所以应首先升级openssl，步骤如下：
+
+	从官网下载最新版本压缩包：
+	wget http://www.openssl.org/source/openssl-1.0.2l.tar.gz
+
+	下载完之后，解压并进行安装：
+	tar -zxvf openssl-1.0.2l.tar.gz     	
+	cd openssl-1.0.2l		   
+	./config shared zlib		    
+	make && make install_sw
+
+	修改历史的OpenSSL文件设置备份
+	mv /usr/bin/openssl /usr/bin/openssl.old
+	mv /usr/include/openssl /usr/include/openssl.old
+
+	设置软连接使其使用新的OpenSSL版本 刚刚安装的OpenSSL默认安装在/usr/local/ssl
+	ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
+	ln -s /usr/local/ssl/include/openssl /usr/include/openssl
+
+	更新动态链接库数据
+	echo "/usr/local/ssl/lib" >> /etc/ld.so.conf
+	ldconfig -v
+
+	最后查看一下版本
+	openssl version
+
+
+安装的过程中，碰到了一个问题:
+
+memcache安装失败： error: zlib.h: No such file or directory
+
+解决方案：安装zlib模块
+
+（zlib模块提供了用Gzip和Deflate/Inflate实现的压缩功能。压缩或解压一个流(诸如一个文件)可以通过管道将源数据流通过一个zlib流转化为目标流）
+
+步骤如下：
+
+	在http://www.zlib.net/下载最新zlib压缩包
+
+    build static libraries
+        .../zlib-1.2.1]# ./configure
+        .../zlib-1.2.1]# make test
+        .../zlib-1.2.1]# make install
+    
+	将头文件添加到include文件中：
+    .../zlib-1.2.1]# cp zutil.h /usr/local/include
+    .../zlib-1.2.1]# cp zutil.c /usr/local/include
+
+
+
+
+
+（2）创建用私钥签名的证书，配置到Apache服务器
+
+
+	生成私钥
+	openssl genrsa -des3 -out private.key 2048
+
+-des3代表加密，2048代表生成的密钥的位数
+
+	生成证书请求
+	openssl req -new -key private.key -out server.csr
+
+其中Common Name (e.g. server FQDN or YOUR name) []这个需要填写域名或服务器地址。
+
+	生成服务器的私钥，去除密钥口令
+	openssl rsa -in private.key -out server.key
+
+	使用私钥为证书请求签名，生成给服务器签署的证书，格式是x509的PEM格式
+	openssl x509 -req -in server.csr -out server.crt -outform pem -signkey server.key -days 3650
+
+-outform pem指定证书生成的格式，默认是pem。
+
+	将证书copy到Apache配置路径下
+
+	sudo  mkdir /alidata/server/httpd/conf/ssl
+	cp server.key /alidata/server/httpd/conf/ssl/server.key
+	cp server.crt  /alidata/server/httpd/conf/ssl/server.crt
+
+
+（3）配置Apache服务器
+
+    激活ssl模块：
+    sudo a2enmod ssl
+
+	重启apache2：
+	sudo service apache2 restart  
+
+	编辑配置文件：
+	sudo gedit /etc/apache2/sites-available/default-ssl.conf
+	
+	其中：
+
+	 ServerAdmin后跟admin@example.com  
+     SSLCertificateFile后跟/etc/apache2/ssl/server.crt
+	 SSLCertificateKeyFile后跟/etc/apache2/ssl/server.key
+
+	激活apache中ssl模块：
+	sudo a2ensite default-ssl.conf  
+
+	重启apache2：
+	sudo service apache2 restart
+
+配置成功，可通过 https://域名 进行访问
+
+
+补充：
+
+1、openssl“心脏出血”漏洞
+
+http://www.freebuf.com/articles/network/32171.html
+
+2、SSL/TLS原理详解
+
+https://segmentfault.com/a/1190000002554673
+
+3、SSL/TSL运行机制
+
+http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html
+
+4、什么是HTTPS
+
+http://www.guokr.com/post/114121/
+
+5、HTTPS和SSL/TSL
+
+http://www.techug.com/post/https-ssl-tls.html
