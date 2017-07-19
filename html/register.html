@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<!--
+/*
+*	@time:2017/7/19
+*	@author:Bianca
+*	@version:1.0
+*/
+-->
+
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>EnjoyCryptology</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+ 	<script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+ 	<script type=text/javascript src=../js/register.js></script>
+ 	<link href="../css/register.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript">
+
+	function tabclick(){
+		//先将所有选项卡的样式恢复为默认，再给被点击的选项卡添加选中样式
+		var tab=document.getElementById("tab").getElementsByTagName("dt");
+		var form=document.getElementById("div_tab").getElementsByTagName("form");
+		for(i=0;i<tab.length;i++){
+				tab[i].className='';
+				form[i].className='';
+				if(tab[i]==this){
+						tab[i].className='tab';
+						form[i].className='form_tab';
+				}
+		}
+	}
+//如果被点击，就执行tabclick函数
+	function changetab(){
+		var tab = document.getElementById("tab").getElementsByTagName("dt");
+		for(i=0;i<=tab.length;i++){
+				tab[i].onclick=tabclick;
+		}
+	}
+
+	window.onload=function(){
+		changetab();
+	}
+
+</script>
+
+</head>
+
+<body>
+
+ <!--SIGN UP-->
+<div class="overlay">
+      <h2>注册</h2>
+</div>
+
+<div class="register">
+    <div id="page">
+        <dl id="tab">
+            <dt id="tab_phone" class="tab">手机号注册</dt>
+            <dt id="tab_mail">邮箱注册</dt>
+        </dl>
+        <div id="div_tab">
+						<!-- 手机注册 -->
+            <form method="post" action="../php/register.php" name="send_phone" onSubmit="return Check1()">
+                  <div class="username">
+                    <label>用户名 ：</label><input type="text" name="username" class="text"  onfocus="this.value = '';" onblur="if (this.value == '') " >
+                  </div>
+                  <div class="password">
+                    <lable>密 码  ：</lable>&nbsp;&nbsp;&nbsp;<input type="password" name="password" id="pass" maxlength="36" >
+										<div id="level" class="pw-strength" style="margin-bottom:20px;">
+    									<div class="pw-bar"></div>
+    									<div class="pw-bar-on"></div>
+    									<div class="pw-txt">
+        								<span>弱</span>
+        								<span>中</span>
+        								<span>强</span>
+    								</div>
+									</div>
+								</div>
+
+                  <div calss="phonenumber">
+                    <lable>手机号码：</lable><input type="text" name="phonenumber" onfocus="this.value = '';" onblur="if (this.value == '') ">
+                  </div>
+                  <div class="signin">
+                 		<input type="reset" value="重置">
+                 		<input type="submit" value="提交" >
+                 	</div>
+            </form>
+
+						<!-- 邮箱注册 -->
+            <form method="post" action="../php/register.php" name="send_Email" onSubmit="return Check2()">
+                <div class="username">
+                  用户名：<input type="text" name="username" class="text"  onfocus="this.value = '';" onblur="if (this.value == '') " >
+                </div>
+								<div class="password">
+									密 码  ：<input type="password" name="password" id="pass" maxlength="36" >
+									<div id="level" class="pw-strength" style="margin-bottom:20px;">
+										<div class="pw-bar"></div>
+										<div class="pw-bar-on"></div>
+										<div class="pw-txt">
+											<span>弱</span>
+											<span>中</span>
+											<span>强</span>
+									</div>
+								</div>
+							</div>
+                <div calss="Email">
+                  邮箱：<input type="text" name="Email" onfocus="this.value = '';" onblur="if (this.value == '') ">
+                </div>
+                <div class="signin">
+                  <input type="reset" value="重置">
+                  <input type="submit" value="提交" >
+                </div>
+            </form>
+
+           </div>
+     </div>
+</div>
+
+</form>
+
+
+</body>
+</html>

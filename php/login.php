@@ -1,4 +1,12 @@
 <?php
+
+/*
+*	@time:2017/7/18
+*	@author:Sonya
+*	@version:1.0
+*/
+
+
 $username = $_POST["username"];
 $password = $_POST["password"];
 $mysqli =new mysqli("localhost",getenv('MYSQL_USERNAME'),getenv('MYSQL_PASSWORD'),"FileCloud");
