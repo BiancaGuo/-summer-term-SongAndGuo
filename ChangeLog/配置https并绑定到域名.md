@@ -101,9 +101,9 @@ memcache安装失败： error: zlib.h: No such file or directory
 
 	将证书copy到Apache配置路径下
 
-	sudo  mkdir /alidata/server/httpd/conf/ssl
-	cp server.key /alidata/server/httpd/conf/ssl/server.key
-	cp server.crt  /alidata/server/httpd/conf/ssl/server.crt
+	sudo  mkdir /etc/apache2/ssl
+	cp server.key /etc/apache2/ssl/server.key
+	cp server.crt  /etc/apache2/ssl/server.crt
 
 
 （3）配置Apache服务器
