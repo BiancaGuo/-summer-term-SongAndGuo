@@ -23,15 +23,15 @@ if($row)
    $mt = md5($row['username'].$row['password']);
    if($mt==$token)
    {
-      //  if(time()-$row['getpasstime']>24*60*60)
-      //  {
-      //      $msg = '该链接已过期！';
-      //  }
-      //  else
-      //  {
+        if(time()-$row['getpasstime']>24*60*60)
+        {
+            $msg = '该链接已过期！';
+        }
+        else
+        {
            //重置密码...
            $msg = '请重新设置密码';
-      //  }
+        }
    }
    else
    {
