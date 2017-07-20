@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>EnjoyCryptology</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+ 	<script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+ 	<script type=text/javascript src=../js/register.js></script>
+ 	<link href="../css/register.css" rel="stylesheet" type="text/css" />
+
+
+</head>
+
+<body>
+
+ <!--SIGN UP-->
+<div class="overlay">
+      <h2>找回密码</h2>
+</div>
+<!-- <p><input type="text" class="input" name="email" id="email"><span id="chkmsg"></span></p>
+<p><input type="button" class="btn" id="sub_btn" value="提 交"></p> -->
+<div class="findpsw">
+
+            <form method="post" action="../php/findPsw.php" name="send_mail" onSubmit="return Check()" >
+								<p>
+                  <input type="text" name="username" id="username" class="username"  value="请输入用户名" onfocus="this.value = '';" onblur="if (this.value == '') " >
+								</p>
+								<p>
+                  <input type="text" class="email" name="email" id="email" class="email"  value="请输入注册邮箱" onfocus="this.value = '';" onblur="if (this.value == '') " >
+                  <span id="chkmsg"></span>
+								</p>
+								<p>
+									<input type="reset" value="重  置">
+									<input type="submit" class="btn" id="sub_btn" value="提  交" >
+								</p>
+                  <!-- <div calss="code">
+                  <input type="text" name="code" value="请输入验证码" onfocus="this.value = '';" onblur="if (this.value == '') ">
+
+                  </div> -->
+            </form>
+
+
+</div>
+
+
+<script type="text/javascript">
+
+
+function Check()// 验证表单数据有效性的函数
+{
+
+		//邮箱格式错误
+		var regu = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+		var re = new RegExp(regu);
+		if (re.test(document.send_mail.email.value)!=true)
+		{
+			alert('请输入正确的邮箱地址！');
+			return false;
+		}
+
+		return true;
+}
+
+
+</script>
+</body>
+</html>
