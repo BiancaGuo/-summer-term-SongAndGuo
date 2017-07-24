@@ -1,14 +1,7 @@
 <?php
-
-/*
-*	@time:2017/7/18
-*	@author:Sonya
-*	@version:1.0
-*/
-
-
 $username = $_POST["username"];
 $password = $_POST["password"];
+session_start();
 $mysqli =new mysqli("localhost",getenv('MYSQL_USERNAME'),getenv('MYSQL_PASSWORD'),"FileCloud");
 if($mysqli->connect_errno)
 {
@@ -31,9 +24,12 @@ else
 }
 if (password_verify($password,$pass_hash))
 {
-  echo "pass";
+   $_SESSION['username'] = $_POST['username'];
+    header("Location: ../html/index.php");
+    exit();
 }
-else {
-  echo "wrong username or password";
+else
+{
+  session_start();
+  echo "<script>alert('用户名或密码错误...');location='../html/login.php';</script>";
 }
-?>

@@ -1,10 +1,5 @@
 
 
-<<<<<<< HEAD:RegisterAndLogin/js/register.js
-
-
-=======
->>>>>>> origin/master:js/register.js
 var pwd="notlow";//全局变量，判断密码是否是若密码，若为弱密码，禁止用户注册使用
 var pwd2="notlow";
 //判断用户口令强度
@@ -188,20 +183,11 @@ function Check2()// 验证表单数据有效性的函数
       return false;
     }
 
-<<<<<<< HEAD:RegisterAndLogin/js/register.js
     // if(pwd2=="low")
     // {
     //   alert('密码强度太弱，请重新输入！')
     //   return false;
     // }
-=======
-    if(pwd2=="low")
-    {
-      alert('密码强度太弱，请重新输入！')
-      return false;
-    }
->>>>>>> origin/master:js/register.js
 
     return true;
 }
-

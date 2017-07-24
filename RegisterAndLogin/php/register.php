@@ -5,21 +5,23 @@
 *	@author:Bianca
 *	@version:1.0
 */
+
+include("create_self_signed.php");
 function testPsw($password)
 {
 
   $score = 0;
   if(empty($password)){   //接收的值
 
-      echo "<script>alert('密码为空,请重新注册...');location='../html/register.html';</script>";
+      echo "<script>alert('密码为空,请重新注册...');location='../html/register.php';</script>";
       exit;
   }
 
   // php7 mbstring扩展的安装：mbstring is missing for phpadmin in ubuntu 16.04
   if(mb_strlen($password,'utf-8')>36){   //接收的值
 
-      echo "<script>alert('密码过长,请重新注册...');location='../html/register.html';</script>";
-      exit;
+      echo "<script>alert('密码过长,请重新注册...');location='../html/register.php';</script>";
+      exit();
   }
 
   if(preg_match('/(?=.{6,}).*/',$password)==0)
@@ -38,6 +40,17 @@ function testPsw($password)
   else {
     $score = 1;
   }
+  $passfile=file("ruomima.txt");//打开弱密码文件
+           //遍历
+  for($i=0;$i<count($passwd);$i++)
+  {
+      $psw=$passfile[$i];//取出每一个文件
+      if($password==$psw)
+      {
+	        $score=1;
+		      break;
+	    }
+   }
 
   return $score;
 }
@@ -46,7 +59,7 @@ function testPsw($password)
 function testUsr($username)
 {
   // echo $username;
-  $pattern= '/^[\x4e00-\x9fa5a-zA-Z0-9]+$/';
+  $pattern= '/^[0-9a-zA-Z\x{4e00}-\x{9fa5}]+$/u';
   if(preg_match($pattern,$username)==0)
   {
     return 0;
@@ -60,22 +73,28 @@ function testUsr($username)
 
 $username = $_POST["username"];
 $password = $_POST["password"];
+$repassword = $_POST["repassword"];
 $Email=$_POST["Email"];
 $phonenumber=$_POST["phonenumber"];
 
 //判断密码强度和长度
+if($password != $repassword)
+{
+    echo "<script>alert('两次密码输入不一致，请重新输入...');location='../html/register.php';</script>";
+    exit;
+}
 $score=testPsw($password);
 
 if($score ==0 || $score==1)
 {
-     echo "<script>alert('密码强度过低,请重新注册...');location='../html/register.html';</script>";
+     echo "<script>alert('密码强度过低,请重新注册...');location='../html/register.php';</script>";
      exit;
 }
 //判断用户名是否合法
 if(testUsr($username)== 0)
 {
     // echo $username;
-    echo "<script>alert('用户名不合法,请重新注册...');location='../html/register.html';</script>";
+    echo "<script>alert('用户名不合法,请重新注册...');location='../html/register.php';</script>";
     exit;
 }
 //对密码进行hash
@@ -87,10 +106,10 @@ if($mysqli->connect_errno)
   echo "Falied to connect to MySQL:(".$mysqli->connect_errno.")".$mysqli->connect_error;
   exit();
 }
-else
-{
-    echo "数据库连接成功\n";
-}
+// else
+// {
+//     echo "数据库连接成功\n";
+// }
 
 
 $sql = "select * from Users where username = \"".$username."\";";
@@ -98,10 +117,15 @@ $result = $mysqli->query($sql);
 $result2 = $result->fetch_assoc();
 
 //不允许用户名重复
-if ($result2["username"] == $username)
+if ($result2["username"] == $username && ($result2["Email"] == $Email || $result2["phonenumber"] == $phonenumber))
 {
-        echo "<script>alert('已有人注册此名，请重新选择!');location='../html/register.html';</script>";
-        exit;
+      echo "<script>alert('您已注册，请直接登录...');location='../html/login.php';</script>";
+      exit();
+}
+else if ($result2["username"] == $username)
+{
+    echo "<script>alert('该用户名已被占用，请重新选择...');location='../html/register.php';</script>";
+    exit();
 }
 else
 {
@@ -110,12 +134,15 @@ else
       $result = $mysqli->query($sql);
       if ($result === true)
       {
-            //echo "<script>alert('注册成功,将跳转至登录页面...');location='';</script>";
-            echo "注册成功,将跳转至登录页面...";
+            create_self_signed($username);
+            echo "<script>alert('注册成功,将跳转至登录页面...');location='../html/login.php';</script>";
+            // echo "注册成功,将跳转至登录页面...";
+            // header("Location: ../html/login.html");
+            exit();
 
       }
       else
       {
-            echo "注册失败\n". mysqli_error($conn);;
+            echo "注册失败\n". mysqli_error($mysqli);;
       }
 }
