@@ -1,26 +1,25 @@
 <?php
-
-$indexurl = "/summer_item/html/index.php";
-$registerurl = "/summer_item/html/register.php";
+$indexurl = "http://www.enjoycryptology.com/summer_item/html/index.php";
+$register_php = "register.php";
 session_start();
-include("conn_mysql.php");
-$conn = new DBPDO;
- ?>
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
 <title>EnjoyCryptology.com</title>
 <link href="../css/bootstrap.css" rel="stylesheet" type="text/css" media="all">
 <link href="../css/style.css" rel="stylesheet" type="text/css" media="all"/>
-
 <script src="../js/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script> -->
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); }>
 </script>
 <!-- start-smoth-scrolling -->
 <script type="text/javascript" src="../js/move-top.js"></script>
 <script type="text/javascript" src="../js/easing.js"></script>
+<script src="../js/md5.js"></script>
 	<script type="text/javascript">
 			jQuery(document).ready(function($) {
 				$(".scroll").click(function(event){
@@ -28,8 +27,8 @@ $conn = new DBPDO;
 					$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
 				});
 			});
-	</script>
-<!-- //end-smoth-scrolling -->
+</script>
+
 </head>
 <body>
 <!--header start here-->
@@ -37,18 +36,41 @@ $conn = new DBPDO;
 	<div class="container">
 		<div class="header">
 			<div class="logo">
-				<a href="../html/index.php"> <img src="../image/title.png" alt=""/> </a>
+				<a href="index.php"> <img src="../image/title.png" alt=""/> </a>
 			</div>
 			<span class="menu"> <img src="../image/icon.png" alt=""/></span>
 			<div class="clear"> </div>
 			<div class="navg">
 				<ul class="res">
-          <li><a href="index.php">主页</a></li>
-          <li><a class="active" href="../html/login.php">登录</a></li>
-          <li><a href="../html/register.php">注册</a></li>
-          <li><a href="../html/uploadFile.php">上传文件</a></li>
-          <li><a href="../html/downloadFile.php">下载文件</a></li>
-          <li><a href="../html/decryptedFile.php">文件解密</a></li>
+					<li><a href="index.php">主页</a></li>
+					<?php
+
+					if ($_SESSION['username'] == null){
+						$label = "登录";
+						$url = "login.php";
+					}
+					else {
+						$label = $_SESSION['username'];
+						$url = "yourprofile.php";
+					}
+
+					?>
+					<li><a href=<?=$url?>> <?=$label?> </a></li>
+					<?php
+
+					if ($_SESSION['username'] == null){
+						$label_t = "注册";
+						$url_t = "register.php";
+					}
+					else {
+						$label_t = "登出";
+						$url_t = "../php/logout.php";
+					}
+					?>
+					<li><a href=<?=$url_t?>><?=$label_t?></a></li>
+					<li><a href="../html/uploadFile.php">上传文件</a></li>
+					<li><a href="../html/downloadFile.php">下载文件</a></li>
+					<li><a class="active"  href="../html/decryptedFile.php">文件解密</a></li>
 					<li><a href="../html/verifysign.php">签名验证</a></li>
 					<li><a href="../html/verifyhash.php">完整性校验</a></li>
 				</ul>
@@ -65,83 +87,25 @@ $conn = new DBPDO;
 	</div>
 </div>
 <!--heder end here-->
-
 <!--banner start here-->
-
-<?php
-
-include_once( '../alipay_sdk/aop/AopClient.php' );
-include_once( '../alipay_sdk/aop/request/AlipaySystemOauthTokenRequest.php' );
-include_once( '../weibo_sdk/config.php' );
-include_once( '../weibo_sdk/saetv2.ex.class.php' );
-$grant_flag = 0;
-
-//$signupap = $_POST['signap'] ;
-
-$aop = new AopClient ();
-$aop->gatewayUrl = 'https://openapi.alipay.com/gateway.do';
-$aop->appId = '2017072007819781';
-$aop->rsaPrivateKey = Private_Key;
-$aop->alipayrsaPublicKey=Public_Key;
-$aop->apiVersion = '1.0';
-$aop->signType = 'RSA2';
-$aop->postCharset='utf-8';
-$aop->format='json';
-$request = new AlipaySystemOauthTokenRequest ();
-$request->setGrantType("authorization_code");
-$request->setCode($_REQUEST['auth_code']);
-$result = $aop->execute ($request);
-//echo gettype($result);
-
-$responseNode = str_replace(".", "_", $request->getApiMethodName()) . "_response";
-$alipay_id = $result->alipay_system_oauth_token_response->user_id;
-
-$id_type = 'alipayid';
-$uid = $alipay_id;
-
-
-
-$mysqli =new mysqli("localhost",getenv('MYSQL_USERNAME'),getenv('MYSQL_PASSWORD'),"FileCloud");
-if($mysqli->connect_errno)
-{
-	 echo "Falied to connect to MySQL:(".$mysqli->connect_errno.")".$mysqli->connect_error;
-	 exit();
-}
-$sql = "select * from Users where ".$id_type." = \"".$uid."\";";
-	$result = $mysqli->query($sql);
-// 判断当前用户是否已经授权注册过
-	if($result != false)
-	{
-		if($result->num_rows == 0)
-		{
-?>
 <div class="banner">
 	<div class="container">
 		<div class="banner-main">
-<p>您好，尚未注册过的新用户，请设置您的用户名</p><br></br>
-<form -orm action="setusername.php" method="post">
-		<input type="text" name="username" class="text" >
-		<input name="uid" value=<?php echo $uid; ?> type="hidden" class="text" >
-		<input name="grant_type" value=<?php echo $id_type; ?> type="hidden" class="text">
-		<!--<input name="uid" value='12344' type="hidden" class="text" >-->
-		<input type="submit" value="入口" >
 
-</form>
-<p>放弃注册...<a  href="../html/index.php">跳转到首页</a></p>
-<?php
-}else{
-	$result = $result->fetch_assoc();
-	$_SESSION['username'] = $result["username"]; ;
-	header("Location: ../html/index.php");
-}
-}else{
-		$message=$mysqli->error;
-}
-?>
-<p><?=$message?></p>
+ <!--Upload File  -->
+  <form name="postForm" action="../php/decryptfile.php" method="post" enctype="multipart/form-data" >
+		 <div >
+        <input name="myFile" id="myFile" type="file" style='margin:auto;' value=""/>
+        <br></br>
+				<h4>解密密钥</h4> <input type="text" name="filekey" value="分享链接时的解密密码" class="text" />
+        <br></br><input name="subBtn" id="subBtn" type="submit"  value="点击解密"/>
+		</div>
+  </form>
+
+		</div>
+	</div>
 </div>
-</div>
-</div>
+
 <!--banner end here-->
 <!--below banner start here-->
 
@@ -153,11 +117,11 @@ $sql = "select * from Users where ".$id_type." = \"".$uid."\";";
 		<div class="footer-main">
 			<div class="footer-navg">
 				<ul>
-					<li><a class="active" href="../html/index.php">HOME</a></li>
-					<li><a href="../html/login.php">Log In</a></li>
-					<li><a href="../html/register.php">Register</a></li>
-					<li><a href="../html/uploadFile.php">Upload File</a></li>
-					<li><a href="../html/downloadFile.php">Download File</a></li>
+					<li><a class="active" href="index.php">HOME</a></li>
+					<li><a href="login.php">Log In</a></li>
+					<li><a href="register.php">Register</a></li>
+					<li><a href="uploadFile.php">Upload File</a></li>
+					<li><a href="downloadFile.php">Download File</a></li>
 					<li><a href="../html/decryptfile.php">File Decryption</a></li>
 					<li><a href="../html/verifysign.php">Verify Sign</a></li>
 					<li><a href="../html/verifyhash.php">Verify Hash</a></li>
@@ -186,7 +150,6 @@ $sql = "select * from Users where ".$id_type." = \"".$uid."\";";
 												easingType: 'linear'
 									 		};
 											*/
-
 											$().UItoTop({ easingType: 'easeOutQuart' });
 
 										});

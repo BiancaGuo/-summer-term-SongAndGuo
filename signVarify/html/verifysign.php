@@ -29,24 +29,24 @@ session_start();
 			});
 	</script>
 	<script>
-	function Judgelog(){
-		<?php
-  	if($_SESSION['username'] == null){
-		?>
-
-		alert("匿名用户禁止上传文件")
-		return false
-
-		<?php
-	  }else
-		{
-		?>
-		return true
-
-			<?php
-			}
-			?>
-		}
+	// function Judgelog(){
+	// 	<?php
+  // 	if($_SESSION['username'] == null){
+	// 	?>
+  //
+	// 	alert("匿名用户禁止上传文件")
+	// 	return false
+  //
+	// 	<?php
+	//   }else
+	// 	{
+	// 	?>
+	// 	return true
+  //
+	// 		<?php
+	// 		}
+	// 		?>
+	// 	}
 </script>
 <!-- //end-smoth-scrolling -->
 </head>
@@ -71,7 +71,7 @@ session_start();
 					}
 					else {
 						$label = $_SESSION['username'];
-						$url = "yourprofile.php";
+						$url = "../php/yourprofile.php";
 					}
 
 					?>
@@ -88,9 +88,11 @@ session_start();
 					}
 					?>
 					<li><a href=<?=$url_t?>><?=$label_t?></a></li>
-					<li><a class="active" href="../html/uploadFile.php">上传文件</a></li>
-					<li><a href="../">下载文件</a></li>
-					<li><a href="../">文件解密</a></li>
+					<li><a href="../html/uploadFile.php">上传文件</a></li>
+					<li><a href="../html/downloadFile.php">下载文件</a></li>
+					<li><a href="../html/decryptedFile.php">文件解密</a></li>
+					<li><a class="active" href="../html/verifysign.php">签名验证</a></li>
+					<li><a href="../html/verifyhash.php">完整性校验</a></li>
 				</ul>
 				 <script>
 			    $( "span.menu").click(function() {
@@ -109,12 +111,17 @@ session_start();
 <div class="banner">
 	<div class="container">
 		<div class="banner-main">
-			<h3>下载文件</h3>
+			<h3>数字签名验证</h3>
  <!--Upload File  -->
-  <form name="postForm" action="../php/downloadFile.php" method="post" enctype="multipart/form-data" onsubmit="">
+  <form name="postForm" action="../php/verifysign.php" method="post" enctype="multipart/form-data" onsubmit="return Judgelog()">
 		 <div class="bwn">
-				<input type="text" name="filename" class="filenames" />
-        <input name="subBtn" id="subBtn" type="submit" value="搜索" />
+       <!-- <p>文件所属用户</p>
+        <input name="users" id="users" type="text" value="" /> -->
+       <p>源文件</p>
+        <input name="myFile" id="myFile" type="file" value="已下载文件" />
+      <p>数字签名文件</p>
+				<input name="mySign" id="mySign" type="file" value="数字签名文件" />
+        <input name="subBtn" id="subBtn" type="submit" value="点击校验签名" />
 
 		</div>
   </form>
@@ -133,7 +140,7 @@ session_start();
 		<div class="footer-main">
 			<div class="footer-navg">
 				<ul>
-          <li><a class="active" href="index.html">HOME</a></li>
+          <li><a class="active" href="index.php">HOME</a></li>
 					<?php
 					if ($_SESSION['username'] == null){
 						$label = "Log In";
@@ -141,7 +148,7 @@ session_start();
 					}
 					else {
 						$label = $_SESSION['username'];
-						$url = "yourprofile.php";
+						$url = "../php/yourprofile.php";
 					}
 
 					?>
@@ -150,7 +157,7 @@ session_start();
 
           if ($_SESSION['username']==null){
 						$label_t = "Register";
-						$url_t = $registerurl;
+						$url_t = "register.php";
 					}
 					else {
 						$label_t = "Log Out";
@@ -158,17 +165,14 @@ session_start();
 					}
 					?>
 					<li><a href=<?=$url_t?>><?=$label_t?></a></li>
-					<li><a href="../html/uploadFile.php">上传文件Upload File</a></li>
-					<li><a href="../">Download File</a></li>
-					<li><a href="../">File Decryption</a></li>
-					<!-- <li><a class="active" href="index.html">HOME</a></li>
-					<li><a href="about.html">Log In</a></li>
-					<li><a href="projects.html">Register</a></li>
-					<li><a href="blog.html">Upload File</a></li>
-					<li><a href="events.html">Download File</a></li>
-					<li><a href="gallery.html">File Decryption</a></li>
-					<li><a href="https://github.com/BiancaGuo/-summer-term-SongAndGuo">Contact Us</a></li> -->
-				</ul>
+
+						<li><a href="uploadFile.php">Upload File</a></li>
+						<li><a href="downloadFile.php">Download File</a></li>
+						<li><a href="../html/decryptfile.php">File Decryption</a></li>
+						<li><a href="../html/verifysign.php">Verify Sign</a></li>
+						<li><a href="../html/verifyhash.php">Verify Hash</a></li>
+						<li><a href="https://github.com/BiancaGuo/-summer-term-SongAndGuo">Contact Us</a></li>
+					</ul>
 			</div>
 			<div class="footer-top">
 				<div class="col-md-4 footer-right">

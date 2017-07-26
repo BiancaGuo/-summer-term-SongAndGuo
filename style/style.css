@@ -136,6 +136,29 @@ span.menu {
   margin-left: 450px;
   margin-bottom:20px;
 }
+
+
+.bwn #mySign {
+
+	padding: 14px 2em;
+	border: none;
+	border-radius: 30px;
+	cursor: pointer;
+  margin-left: 450px;
+  margin-bottom:20px;
+}
+
+.bwn #users {
+  /*width:200px;
+  height:20px;
+	padding: 14px 2em;
+	border: none;
+	border-radius: 30px;
+	cursor: pointer;*/
+  margin-left: 10px;
+  margin-top:10px;
+  margin-bottom:20px;
+}
 /*--banner style end here--*/
 /*--below start here--*/
 .below-coloum{
@@ -1429,7 +1452,8 @@ span.u:hover{
 .get-left input[type="reset"] {
 	width: 15%;
 	padding: 10px 30px;
-	background: brown;
+	background: grey;
+  /*border-color:red;*/
 	border: none;
 	font-size:15px;
 	font-weight:400;
@@ -1439,7 +1463,7 @@ span.u:hover{
 	margin-top: 10px;
 }
 .get-left input[type="reset"]:hover{
-	background:#777;
+	background:brown;
 	color:#fff;
 	  transition: all 0.3s ease;
       -webkit-transition: all 0.3s ease;
